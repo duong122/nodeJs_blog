@@ -3,11 +3,13 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const Course = new Schema({
-    name: {type: String, minLength: 1, maxLength: 255},
+    name: {type: String, minLength: 1, require: true},
     description: {type: String, maxLength: 600},
     image: {type: String, maxLength: 255},
-    createdAt: {type: Date, default: Date.now},
-    updatedAt: {type: Date, default: Date.now},
+    videoId: {type: String, require: true},
+    level: {type: String, maxLength: 255},
+}, {
+    timestamps: true,
 })
 
 module.exports = mongoose.model('Course', Course);
