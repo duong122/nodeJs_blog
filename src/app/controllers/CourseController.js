@@ -1,7 +1,24 @@
-const Course = require('../model/Course')
+const Course = require('../models/Course')
 const  { mongoseToObject } = require('../../util/mongoose')
+const { options } = require('../../routes/courses')
 
 class CourseController {
+
+    //[Put] /courses/:id
+    update(req, res, next) {
+       Course.findById(req.params.id).updateOne(req.body)
+        .then(() => res.redirect('/me/stored/courses'))
+        .catch(next)
+    }
+
+    //[Get] /courses/:id/edit
+    edit(req, res, next) {
+        Course.findById(req.params.id)
+            .then(course => res.render('courses/edit', {
+                course: mongoseToObject(course)
+            }))
+            .catch(next)
+    }
 
     // [Get] /courses/create
     create(req, res, next) {
@@ -14,11 +31,10 @@ class CourseController {
         var formData = req.body
         formData.image = `https://img.youtube.com/vi/${formData.videoId}/maxresdefault.jpg`
         const course = new Course(formData)
+        console.log(formData)
         course.save()
-            // .then(() => res.redirect(`/course/${}`)) Video 27 - 19:45
-
-        // res.send('Saved successfully !!! ')
-        res.redirect('/course/create')
+            .then(() => res.redirect('/')) 
+            .catch(next)
     }
 
     // [Get] /courses/:slug
