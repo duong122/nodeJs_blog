@@ -4,6 +4,13 @@ const { options } = require('../../routes/courses')
 
 class CourseController {
 
+    // [Delete] /courses/:id 
+    destroy(req, res, next) {
+        Course.deleteOne({ _id: req.params.id})
+            .then(() => res.redirect('back'))
+            .catch(next)
+    }
+
     //[Put] /courses/:id
     update(req, res, next) {
        Course.findById(req.params.id).updateOne(req.body)
