@@ -4,9 +4,23 @@ const { options } = require('../../routes/courses')
 
 class CourseController {
 
+    // [Patch] /courses/:id/restore
+    restore(req, res, next) { 
+        Course.restoreOne({ _id: req.params.id })
+            .then(() => res.redirect(req.get("Referrer") || "/"))
+            .catch(next)
+    }
+
+    // [Delete] /course/:id/force
+    forceDestroy(req, res, next) {
+        Course.deleteMany({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch((err) => { console.log('error: ', err)})
+    }
+
     // [Delete] /courses/:id 
     destroy(req, res, next) {
-        Course.deleteOne({ _id: req.params.id})
+        Course.deleteOne( { _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next)
     }
@@ -34,13 +48,11 @@ class CourseController {
 
     // [Post] /courses/store
     store(req, res, next) {
-        // res.send(req.body)
-        var formData = req.body
-        formData.image = `https://img.youtube.com/vi/${formData.videoId}/maxresdefault.jpg`
-        const course = new Course(formData)
-        console.log(formData)
+        req.body.image = `https://img.youtube.com/vi/${req.body.videoId}/maxresdefault.jpg`
+        const course = new Course(req.body)
+        // console.log(formData)
         course.save()
-            .then(() => res.redirect('/')) 
+            .then(() => res.redirect('/me/stored/courses')) 
             .catch(next)
     }
 
